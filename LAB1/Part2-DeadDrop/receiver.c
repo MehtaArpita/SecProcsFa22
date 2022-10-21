@@ -27,7 +27,7 @@ int main(int argc, char **argv)
    	}
 
 	int decoded_message [8];
-	uint64_t threshold = 100;
+	uint64_t threshold = 60;
 	volatile char temp;
 	int t;	
 	uint64_t selected_set[8] = {12,25,30,140,200,250,300,400};
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   }
 
 	// prime the selected cache sets
-	for (int i = 0; i<2000; i++) {
+	for (int i = 0; i<10000; i++) {
 		for (int set_index = 0; set_index < 8; set_index++) {
 			for (int line = 0; line < 8; line ++) {
 			        t =(int) buffer_access_index[set_index][line];
@@ -64,6 +64,7 @@ int main(int argc, char **argv)
 	//add some delay 
 		for (int i = 0; i < 10000000; i++) { 
 		}
+
 	uint64_t latency[8][8] = {0};
 	bool listening = true;
 	int  output = 0;
@@ -74,7 +75,8 @@ int main(int argc, char **argv)
 		//Probe the relevant address
 		for (int set_index = 0; set_index < 8; set_index++) {
 			for (int line = 0; line < 8; line ++) {
-				latency[set_index][line] = measure_one_block_access_time(eviction_set[set_index][ line]);				
+				latency[set_index][line] = measure_one_block_access_time(eviction_set[set_index][ line]);	
+				printf("% \n", latency[set_index][line]);		
 			}
 		}
 	printf("probe done");
