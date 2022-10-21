@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 		for (int set_index = 0; set_index < 8; set_index++) {
 			for (int line = 0; line < 8; line ++) {
 				latency[set_index][line] = measure_one_block_access_time(eviction_set[set_index][ line]);	
-				printf("% \n", latency[set_index][line]);		
+				//printf("% \n", latency[set_index][line]);		
 			}
 		}
 	printf("probe done");
