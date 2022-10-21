@@ -66,7 +66,7 @@ int main (int ac, char **av) {
     //
     for(int i = 0;i <SAMPLES; i++){
 
-	for (int z=0; z<10000; z++){    
+	for (int z=0; z<100000; z++){    
 	    for (int j=0; j<L2_SIZE; j=j+8){    
 	    tmp = eviction_buffer_l2[j];
 	    }  
