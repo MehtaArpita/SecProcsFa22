@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 	  return EXIT_FAILURE;
    }
 
-  uint64_t sets_to_watch[8] = {12,25,30,140,200};
+  uint64_t selected_sets[8] = {12,25,30,140,200,250,300,400};
 
   uint64_t eviction_set[8][8];
   uint64_t mask = 0x1FF;
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	for (int j=0; j<BUFF_SIZE_1; j= j+8){
 	      adrs =(uint64_t) (buffer + j);
       	      adrs_setindex = (adrs>>6) & mask;
-	      if (sets_to_watch[i] == adrs_setindex) {
+	      if (selected_sets[i] == adrs_setindex) {
 		eviction_set[i][line_count] = adrs;
   		line_count = line_count + 1;
 	      }
@@ -73,7 +73,6 @@ int main(int argc, char **argv)
   printf("Please type a message.\n");
 
   bool sending = true;
-  bool sequence[8] = {1,0,1,0,1,0,1,1};
   while (sending) {
       char text_buf[128];
       fgets(text_buf, sizeof(text_buf), stdin);
@@ -87,11 +86,13 @@ int main(int argc, char **argv)
       char *msg = string_to_binary(text_buf);
       size_t msg_len = strlen(msg);
       for (int index = 0; index< 8; index++) {
-	//if (msg[index] == '0') {
-           send_bit(sequence[index],eviction_set[index]);
-   	//}else {
-	  // send_bit(true,&config);
-   	}	   
+	for (int line = 0; line<8; line++) {
+		if (msg[index] == '0') {
+           		send_bit(false,eviction_set[index%8][line]);
+   		}else {
+	   		send_bit(true,eviction_set[index%8][line]);
+   		}
+	}
   	
   }
   free(buffer);
