@@ -87,17 +87,12 @@ int main(int argc, char **argv)
       char *msg = string_to_binary(text_buf);
       size_t msg_len = strlen(msg);
       for (int index = 0; index< 8; index++) {
+	//if (msg[index] == '0') {
            send_bit(sequence[index],eviction_set[index]);
+   	//}else {
+	  // send_bit(true,&config);
    	}	   
-
-      for (index = 0; index < msg_len; index++) {
-	  if (msg[index] == '0') {
-	      send_bit(False, eviction_set[index%8]);
-    	  } 
-	  else {
-	      send_bit(False, eviction_set[index%8]);
-	}	      
-      }
+  	
   }
   free(buffer);
   printf("Sender finished.\n");
