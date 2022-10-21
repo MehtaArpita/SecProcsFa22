@@ -5,7 +5,23 @@
 
 // TODO: define your own buffer size
 #define BUFF_SIZE (1<<21)
-//#define BUFF_SIZE [TODO]
+#define BUFF_SIZE_1 4096
+
+
+void send_bit (bool one, uint64_t* address) {
+	volatile char temp;
+	uint64_t *target = (uint64_t*)malloc(8*sizeof(uint64_t));
+	target = address;		
+	if (one) {
+		temp = target[0];
+	}
+	else {
+
+	}
+	free(target);
+}
+
+
 
 int main(int argc, char **argv)
 {
@@ -17,6 +33,33 @@ int main(int argc, char **argv)
      perror("mmap() error\n");
      exit(EXIT_FAILURE);
   }
+
+  uint64_t *buffer = (uint64_t*)malloc(BUFF_SIZE_1*sizeof(uint64_t));
+  
+  if(NULL == buffer) {
+	  perror("Unable to malloc");
+	  return EXIT_FAILURE;
+   }
+
+  uint64_t sets_to_watch[8] = {12,25,30,140,200};
+
+  uint64_t eviction_set[8][8];
+  uint64_t mask = 0x1FF;
+  uint64_t adrs;
+  uint64_t adrs_setindex;
+  int line_count = 0;
+
+  for (int i=0; i<8; i++) {
+	  line_count = 0;
+	for (int j=0; j<BUFF_SIZE_1; j= j+8){
+	      adrs =(uint64_t) (buffer + j);
+      	      adrs_setindex = (adrs>>6) & mask;
+	      if (sets_to_watch[i] == adrs_setindex) {
+		eviction_set[i][line_count] = adrs;
+  		line_count = line_count + 1;
+	      }
+	}
+  }	
   // The first access to a page triggers overhead associated with
   // page allocation, TLB insertion, etc.
   // Thus, we use a dummy write here to trigger page allocation
@@ -30,14 +73,33 @@ int main(int argc, char **argv)
   printf("Please type a message.\n");
 
   bool sending = true;
+  bool sequence[8] = {1,0,1,0,1,0,1,1};
   while (sending) {
       char text_buf[128];
       fgets(text_buf, sizeof(text_buf), stdin);
 
       // TODO:
       // Put your covert channel code here
-  }
+      if (strcmp(text_buf,"exit\n") == 0) {
+	sending = false;
+	}
 
+      char *msg = string_to_binary(text_buf);
+      size_t msg_len = strlen(msg);
+      for (int index = 0; index< 8; index++) {
+           send_bit(sequence[index],eviction_set[index]);
+   	}	   
+
+      for (index = 0; index < msg_len; index++) {
+	  if (msg[index] == '0') {
+	      send_bit(False, eviction_set[index%8]);
+    	  } 
+	  else {
+	      send_bit(False, eviction_set[index%8]);
+	}	      
+      }
+  }
+  free(buffer);
   printf("Sender finished.\n");
   return 0;
 }
