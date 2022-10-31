@@ -53,7 +53,6 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         for (int block = 0; block < 256; block++) {
 
             clflush(shared_memory + (LAB2_PAGE_SIZE * block));
-
             clflush(shared_memory + (LAB2_PAGE_SIZE * block));
         }
 
