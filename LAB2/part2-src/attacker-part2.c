@@ -53,9 +53,6 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         for (int i =0; i<200; i++) {
             call_kernel_part2 (kernel_fd, shared_memory, 1);
-            call_kernel_part2 (kernel_fd, shared_memory, 2);
-            call_kernel_part2 (kernel_fd, shared_memory, 3);
-            call_kernel_part2 (kernel_fd, shared_memory, 4);
         } 
 
         // Step1 : Flush the shared memory 
