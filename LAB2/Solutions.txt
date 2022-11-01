@@ -1,0 +1,7 @@
+Discussion Q1 :  256. We need one page  each to represent the 256 character possibilities that each byte  (to be leaked) can assume.
+
+Discussion Q2 :  The attack will not work in absence of shared memory as we used a flush and reload type attack. To make it work for non shared memory case a prime + probe attack will have to be carried out. 
+
+Discussion Q3 :  In real world it can be used to leak arbitrary informations in the similar way as the attack. The out of bounds offset can be used to find secret key. By measuring the address location hit or miss (using timing side channels), the key bit values can be guessed. 
+
+Discussion Q4 : It works even when trained once 
